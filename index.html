@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Consumo Digital</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+            color: #1e293b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            max-width: 780px;
+            text-align: center;
+            padding: 3rem 1.5rem 2rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #4f46e5;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            margin-bottom: 1rem;
+        }
+
+        header h1 {
+            font-size: 2.1rem;
+            margin-bottom: 0.8rem;
+            color: #0f172a;
+        }
+
+        header p {
+            font-size: 1.05rem;
+            color: #64748b;
+        }
+
+        main {
+            width: 100%;
+            max-width: 760px;
+            padding: 0 1.5rem 4rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .q-block {
+            margin-bottom: 2rem;
+            padding-bottom: 1.6rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .q-block:last-of-type {
+            border-bottom: none;
+            margin-bottom: 1rem;
+            padding-bottom: 0;
+        }
+
+        .q-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: block;
+            color: #0f172a;
+            line-height: 1.4;
+        }
+
+        .opts {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .opt {
+            cursor: pointer;
+            display: block;
+        }
+
+        .opt input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .box {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.9rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .box:hover {
+            border-color: #a5b4fc;
+            background: #f8fafc;
+        }
+
+        .dot {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dot::after {
+            content: "";
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #4f46e5;
+            transform: scale(0);
+            transition: 0.15s;
+        }
+
+        .opt input:checked+.box {
+            border-color: #4f46e5;
+            background: #eef2ff;
+            font-weight: 600;
+            color: #4f46e5;
+        }
+
+        .opt input:checked+.box .dot {
+            border-color: #4f46e5;
+        }
+
+        .opt input:checked+.box .dot::after {
+            transform: scale(1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1.1rem;
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #4338ca;
+        }
+
+        .ref-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #0f172a;
+        }
+
+        .ref-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+
+        .ref-table th,
+        .ref-table td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .ref-table th {
+            background: #f8fafc;
+            color: #475569;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.7rem;
+            }
+
+            .card {
+                padding: 1.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <span class="badge">Autoavaliação Digital • 10 Perguntas</span>
+        <h1>Qual é o seu nível de consumo digital?</h1>
+        <p>Responda às 10 perguntas abaixo e clique no botão ao final para enviar suas respostas.</p>
+    </header>
+
+    <main>
+        <div class="card">
+            <form action="#" method="POST">
+
+                <!-- 1 -->
+                <div class="q-block">
+                    <span class="q-title">1. Quanto tempo por dia você passa rolando feeds de redes sociais (Instagram,
+                        TikTok, X, Facebook)?</span>
+                    <div class="opts">
+                        <label class="opt"><input type="radio" name="q1" value="1" required>
+                            <div class="box"><span class="dot"></span><span>Menos de 30 minutos</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q1" value="2">
+                            <div class="box"><span class="dot"></span><span>Entre 30 minutos e 2 horas</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q1" value="3">
+                            <div class="box"><span class="dot"></span><span>Entre 2 e 4 horas</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q1" value="4">
+                            <div class="box"><span class="dot"></span><span>Mais de 4 horas</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 2 -->
+                <div class="q-block">
+                    <span class="q-title">2. Qual é o seu primeiro hábito ao acordar?</span>
+                    <div class="opts">
+                        <label class="opt"><input type="radio" name="q2" value="1" required>
+                            <div class="box"><span class="dot"></span><span>Levanto, tomo café ou faço outras tarefas
+                                    antes de pegar o celular</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q2" value="2">
+                            <div class="box"><span class="dot"></span><span>Checo apenas mensagens urgentes ou a
+                                    previsão do tempo</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q2" value="3">
+                            <div class="box"><span class="dot"></span><span>Abro as redes sociais ou portais de notícias
+                                    ainda na cama por alguns minutos</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q2" value="4">
+                            <div class="box"><span class="dot"></span><span>Fico mais de 20 minutos consumindo conteúdo
+                                    antes mesmo de levantar</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 3 -->
+                <div class="q-block">
+                    <span class="q-title">3. Quantas horas de vídeo (YouTube, streaming, lives, filmes) você assiste
+                        diariamente por lazer?</span>
+                    <div class="opts">
+                        <label class="opt"><input type="radio" name="q3" value="1" required>
+                            <div class="box"><span class="dot"></span><span>Menos de 1 hora</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q3" value="2">
+                            <div class="box"><span class="dot"></span><span>Entre 1 e 2 horas</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q3" value="3">
+                            <div class="box"><span class="dot"></span><span>Entre 2 e 4 horas</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q3" value="4">
+                            <div class="box"><span class="dot"></span><span>Mais de 4 horas ou deixo vídeos rodando o
+                                    dia todo de fundo</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 4 -->
+                <div class="q-block">
+                    <span class="q-title">4. Com que frequência você consome conteúdos de áudio (podcasts, audiolivros,
+                        músicas em streaming)?</span>
+                    <div class="opts">
+                        <label class="opt"><input type="radio" name="q4" value="1" required>
+                            <div class="box"><span class="dot"></span><span>Raramente ou apenas em viagens longas</span>
+                            </div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q4" value="2">
+                            <div class="box"><span class="dot"></span><span>Algumas vezes na semana</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q4" value="3">
+                            <div class="box"><span class="dot"></span><span>Todos os dias, em momentos específicos como
+                                    no trânsito ou na academia</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q4" value="4">
+                            <div class="box"><span class="dot"></span><span>O tempo todo, enquanto trabalho, estudo e
+                                    faço tarefas domésticas</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 5 -->
+                <div class="q-block">
+                    <span class="q-title">5. Como é a sua rotina de leitura de notícias, artigos, blogs ou
+                        newsletters?</span>
+                    <div class="opts">
+                        <label class="opt"><input type="radio" name="q5" value="1" required>
+                            <div class="box"><span class="dot"></span><span>Leio apenas quando algo muito importante
+                                    acontece</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q5" value="2">
+                            <div class="box"><span class="dot"></span><span>Leio um resumo diário ou semanal</span>
+                            </div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q5" value="3">
+                            <div class="box"><span class="dot"></span><span>Acesso sites de notícias e recebo
+                                    newsletters várias vezes ao dia</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q5" value="4">
+                            <div class="box"><span class="dot"></span><span>Acompanho atualizações em tempo real o dia
+                                    inteiro</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 6 -->
+                <div class="q-block">
+                    <span class="q-title">6. Você costuma consumir mais de um conteúdo ao mesmo tempo (ex: mexer no
+                        celular enquanto vê TV)?</span>
+                    <div class="opts">
+                        <label class="opt"><input type="radio" name="q6" value="1" required>
+                            <div class="box"><span class="dot"></span><span>Nunca, prefiro focar em uma coisa de cada
+                                    vez</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q6" value="2">
+                            <div class="box"><span class="dot"></span><span>Raramente, apenas durante intervalos
+                                    comerciais</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q6" value="3">
+                            <div class="box"><span class="dot"></span><span>Com frequência, especialmente quando o
+                                    programa está entediante</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q6" value="4">
+                            <div class="box"><span class="dot"></span><span>Quase sempre, preciso de estímulos
+                                    simultâneos</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 7 -->
+                <div class="q-block">
+                    <span class="q-title">7. Como você usa o celular durante as refeições?</span>
+                    <div class="opts">
+                        <label class="opt"><input type="radio" name="q7" value="1" required>
+                            <div class="box"><span class="dot"></span><span>Não uso, deixo o aparelho longe da
+                                    mesa</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q7" value="2">
+                            <div class="box"><span class="dot"></span><span>Deixo na mesa, mas só olho se tocar</span>
+                            </div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q7" value="3">
+                            <div class="box"><span class="dot"></span><span>Assisto a vídeos ou leio algo quando estou
+                                    comendo sozinho</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q7" value="4">
+                            <div class="box"><span class="dot"></span><span>Sempre consumo algum conteúdo, mesmo
+                                    acompanhado de outras pessoas</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 8 -->
+                <div class="q-block">
+                    <span class="q-title">8. Qual é a sua relação com vídeos curtos (Reels, TikTok, Shorts)?</span>
+                    <div class="opts">
+                        <label class="opt"><input type="radio" name="q8" value="1" required>
+                            <div class="box"><span class="dot"></span><span>Não assisto ou não tenho esses
+                                    aplicativos</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q8" value="2">
+                            <div class="box"><span class="dot"></span><span>Assisto ocasionalmente por alguns
+                                    minutos</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q8" value="3">
+                            <div class="box"><span class="dot"></span><span>Assisto todos os dias e às vezes perco a
+                                    noção do tempo</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q8" value="4">
+                            <div class="box"><span class="dot"></span><span>Passo horas deslizando a tela continuamente
+                                    sem perceber</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 9 -->
+                <div class="q-block">
+                    <span class="q-title">9. O que você costuma fazer nos últimos 30 minutos antes de dormir?</span>
+                    <div class="opts">
+                        <label class="opt"><input type="radio" name="q9" value="1" required>
+                            <div class="box"><span class="dot"></span><span>Leio um livro físico, medito ou apenas
+                                    descanso longe de telas</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q9" value="2">
+                            <div class="box"><span class="dot"></span><span>Coloco uma música calma ou podcast com
+                                    temporizador</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q9" value="3">
+                            <div class="box"><span class="dot"></span><span>Dou uma última olhada rápida nas redes
+                                    sociais</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q9" value="4">
+                            <div class="box"><span class="dot"></span><span>Fico navegando na internet até pegar no sono
+                                    com o celular na mão</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 10 -->
+                <div class="q-block">
+                    <span class="q-title">10. Como você se sente quando fica sem acesso à internet ou sem o celular por
+                        algumas horas?</span>
+                    <div class="opts">
+                        <label class="opt"><input type="radio" name="q10" value="1" required>
+                            <div class="box"><span class="dot"></span><span>Tranquilo e aliviado por ter um tempo
+                                    desconectado</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q10" value="2">
+                            <div class="box"><span class="dot"></span><span>Normal, apenas sinto falta caso precise me
+                                    comunicar com alguém</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q10" value="3">
+                            <div class="box"><span class="dot"></span><span>Um pouco entediado e curioso para saber o
+                                    que perdi</span></div>
+                        </label>
+                        <label class="opt"><input type="radio" name="q10" value="4">
+                            <div class="box"><span class="dot"></span><span>Ansioso, inquieto e com a sensação de estar
+                                    "por fora" de tudo</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">Enviar Respostas</button>
+            </form>
+        </div>
+    </main>
+
+</body>
+
+</html>
