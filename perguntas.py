@@ -1,87 +1,204 @@
-# Função que apenas retorna a resposta do usuário
-def somar_pontos(resposta):
-    return resposta
+from flask import Flask, jsonify, request, send_from_directory
+from pathlib import Path
 
-# Lista com todas as perguntas e opções
-perguntas = [
-    (
-        "1. Quanto tempo por dia você passa rolando feeds de redes sociais?",
-        ["Menos de 30 min", "Entre 30 min e 2h", "Entre 2 a 4 horas", "Mais de 4 horas"]
-    ),
-    (
-        "2. Qual é o seu primeiro hábito ao acordar?",
-        ["Levanto, tomo café ou faço outras tarefas antes de pegar o celular", "Checo apenas mensagens urgentes ou previsão do tempo", "Abro redes sociais ou notícias na cama por alguns minutos", "Fico mais de 20 min consumindo conteúdo antes de levantar"]
-    ),
-    (
-        "3. Quantas horas de vídeo (YouTube, streaming, lives) você assiste diariamente?",
-        ["Menos de 1 hora", "Entre 1 e 2 horas", "Entre 2 e 4 horas", "Mais de 4 horas ou deixo rodando o dia todo"]
-    ),
-    (
-        "4. Com que frequência você consome conteúdos de áudio (podcasts, músicas)?",
-        ["Raramente ou apenas em viagens longas", "Algumas vezes na semana", "Todos os dias, em momentos específicos (trânsito/academia)", "O tempo todo, enquanto trabalho, estudo e faço tarefas"]
-    ),
-    (
-        "5. Como é a sua rotina de leitura de notícias, artigos ou newsletters?",
-        ["Leio apenas quando algo muito importante acontece", "Leio um resumo diário ou semanal", "Acesso sites de notícias e newsletters várias vezes ao dia", "Acompanho atualizações em tempo real o dia inteiro"]
-    ),
-    (
-        "6. Você costuma consumir mais de um conteúdo ao mesmo tempo (ex: mexer no celular enquanto vê TV)?",
-        ["Nunca, prefiro focar em uma coisa de cada vez", "Raramente, apenas durante intervalos comerciais", "Com frequência, especialmente quando o programa está entediante", "Quase sempre, preciso de estímulos simultâneos"]
-    ),
-    (
-        "7. Como você usa o celular durante as refeições?",
-        ["Não uso, deixo o aparelho longe da mesa", "Deixo na mesa, mas só olho se tocar", "Assisto a vídeos ou leio algo quando estou comendo sozinho", "Sempre consumo conteúdo, mesmo acompanhado"]
-    ),
-    (
-        "8. Qual é a sua relação com vídeos curtos (Reels, TikTok, Shorts)?",
-        ["Não assisto ou não tenho esses aplicativos", "Assisto ocasionalmente por alguns minutos", "Assisto todos os dias e às vezes perco a noção do tempo", "Passo horas deslizando a tela continuamente"]
-    ),
-    (
-        "9. O que você costuma fazer nos últimos 30 minutos antes de dormir?",
-        ["Leio livro físico, medito ou descanso longe de telas", "Coloco música calma ou podcast com temporizador", "Dou uma última olhada rápida nas redes sociais", "Fico navegando na internet até pegar no sono com o celular"]
-    ),
-    (
-        "10. Como você se sente quando fica sem acesso à internet ou celular por algumas horas?",
-        ["Tranquilo e aliviado por ter tempo desconectado", "Normal, apenas sinto falta se precisar comunicar alguém", "Um pouco entediado e curioso para saber o que perdi", "Ansioso, inquieto e com sensação de estar 'por fora'"]
-    )
+app = Flask(__name__)
+BASE_DIR = Path(__file__).resolve().parent
+
+# Cada resposta vale de 1 a 4 pontos.
+PERGUNTAS = [
+    {
+        "id": 1,
+        "texto": "Quanto tempo por dia você passa rolando feeds de redes sociais?",
+        "opcoes": [
+            "Menos de 30 min",
+            "Entre 30 min e 2h",
+            "Entre 2 a 4 horas",
+            "Mais de 4 horas",
+        ],
+    },
+    {
+        "id": 2,
+        "texto": "Qual é o seu primeiro hábito ao acordar?",
+        "opcoes": [
+            "Levanto, tomo café ou faço outras tarefas antes de pegar o celular",
+            "Checo apenas mensagens urgentes ou previsão do tempo",
+            "Abro redes sociais ou notícias na cama por alguns minutos",
+            "Fico mais de 20 min consumindo conteúdo antes de levantar",
+        ],
+    },
+    {
+        "id": 3,
+        "texto": "Quantas horas de vídeo (YouTube, streaming, lives) você assiste diariamente?",
+        "opcoes": [
+            "Menos de 1 hora",
+            "Entre 1 e 2 horas",
+            "Entre 2 e 4 horas",
+            "Mais de 4 horas ou deixo rodando o dia todo",
+        ],
+    },
+    {
+        "id": 4,
+        "texto": "Com que frequência você consome conteúdos de áudio (podcasts, músicas)?",
+        "opcoes": [
+            "Raramente ou apenas em viagens longas",
+            "Algumas vezes na semana",
+            "Todos os dias, em momentos específicos (trânsito/academia)",
+            "O tempo todo, enquanto trabalho, estudo e faço tarefas",
+        ],
+    },
+    {
+        "id": 5,
+        "texto": "Como é a sua rotina de leitura de notícias, artigos ou newsletters?",
+        "opcoes": [
+            "Leio apenas quando algo muito importante acontece",
+            "Leio um resumo diário ou semanal",
+            "Acesso sites de notícias e newsletters várias vezes ao dia",
+            "Acompanho atualizações em tempo real o dia inteiro",
+        ],
+    },
+    {
+        "id": 6,
+        "texto": "Você costuma consumir mais de um conteúdo ao mesmo tempo?",
+        "opcoes": [
+            "Nunca, prefiro focar em uma coisa de cada vez",
+            "Raramente, apenas durante intervalos comerciais",
+            "Com frequência, especialmente quando o programa está entediante",
+            "Quase sempre, preciso de estímulos simultâneos",
+        ],
+    },
+    {
+        "id": 7,
+        "texto": "Como você usa o celular durante as refeições?",
+        "opcoes": [
+            "Não uso, deixo o aparelho longe da mesa",
+            "Deixo na mesa, mas só olho se tocar",
+            "Assisto a vídeos ou leio algo quando estou comendo sozinho",
+            "Sempre consumo conteúdo, mesmo acompanhado",
+        ],
+    },
+    {
+        "id": 8,
+        "texto": "Qual é a sua relação com vídeos curtos (Reels, TikTok, Shorts)?",
+        "opcoes": [
+            "Não assisto ou não tenho esses aplicativos",
+            "Assisto ocasionalmente por alguns minutos",
+            "Assisto todos os dias e às vezes perco a noção do tempo",
+            "Passo horas deslizando a tela continuamente",
+        ],
+    },
+    {
+        "id": 9,
+        "texto": "O que você costuma fazer nos últimos 30 minutos antes de dormir?",
+        "opcoes": [
+            "Leio livro físico, medito ou descanso longe de telas",
+            "Coloco música calma ou podcast com temporizador",
+            "Dou uma última olhada rápida nas redes sociais",
+            "Fico navegando na internet até pegar no sono com o celular",
+        ],
+    },
+    {
+        "id": 10,
+        "texto": "Como você se sente quando fica sem acesso à internet ou celular por algumas horas?",
+        "opcoes": [
+            "Tranquilo e aliviado por ter tempo desconectado",
+            "Normal, apenas sinto falta se precisar comunicar alguém",
+            "Um pouco entediado e curioso para saber o que perdi",
+            "Ansioso, inquieto e com sensação de estar por fora",
+        ],
+    },
 ]
 
-resultado = 0
 
-print("=== QUIZ: QUAL É O SEU NÍVEL DE CONSUO DIGITAL? ===\n")
+def classificar(resultado):
+    if 10 <= resultado <= 16:
+        return {
+            "nivel": "Consumo Baixo (Equilibrado)",
+            "descricao": "Você tem ótimo controle sobre seu tempo de tela e prioriza atividades offline.",
+        }
+    if 17 <= resultado <= 24:
+        return {
+            "nivel": "Consumo Moderado",
+            "descricao": "Você usa a internet de forma saudável no dia a dia, mas já tem alguns hábitos automáticos.",
+        }
+    if 25 <= resultado <= 32:
+        return {
+            "nivel": "Consumo Alto",
+            "descricao": "Grande parte do seu tempo livre é ocupada por telas, o que pode gerar cansaço mental.",
+        }
+    return {
+        "nivel": "Consumo Muito Alto (Hiperconectado)",
+        "descricao": "O consumo digital domina sua rotina e pode estar afetando seu sono, foco e bem-estar.",
+    }
 
-# Loop para rodar todas as perguntas automaticamente
-for i, (pergunta, opcoes) in enumerate(perguntas, start=1):
-    print(pergunta)
-    for index, opcao in enumerate(opcoes, start=1):
-        print(f"  {index} - {opcao}")
-    
-    # Validação simples para garantir que o usuário digite de 1 a 4
-    while True:
-        try:
-            r = int(input("\nSua escolha (1-4): "))
-            if 1 <= r <= 4:
-                break
-            print("Por favor, digite um número entre 1 e 4.")
-        except ValueError:
-            print("Entrada inválida. Digite apenas o número da opção.")
-            
-    resultado += somar_pontos(r)
-    print("-" * 40)
 
-# Lógica para exibir a faixa de resultado baseada na pontuação total
-print("\n=== RESULTADO FINAL ===")
-print(f"Sua pontuação total: {resultado} de 40 pontos\n")
+@app.get("/")
+def pagina_inicial():
+    return send_from_directory(BASE_DIR, "index.html")
 
-if 10 <= resultado <= 16:
-    print("Nível: Consumo Baixo (Equilibrado)")
-    print("Descrição: Você tem ótimo controle sobre seu tempo de tela e prioriza atividades offline.")
-elif 17 <= resultado <= 24:
-    print("Nível: Consumo Moderado")
-    print("Descrição: Você usa a internet de forma saudável no dia a dia, mas já tem alguns hábitos automáticos.")
-elif 25 <= resultado <= 32:
-    print("Nível: Consumo Alto")
-    print("Descrição: Grande parte do seu tempo livre é ocupada por telas, o que pode gerar cansaço mental.")
-else:
-    print("Nível: Consumo Muito Alto (Hiperconectado)")
-    print("Descrição: O consumo digital domina sua rotina e pode estar afetando seu sono, foco e bem-estar.")
+
+@app.get("/api/perguntas")
+def obter_perguntas():
+    """Retorna as perguntas para qualquer cliente que consumir a API."""
+    return jsonify({
+        "total": len(PERGUNTAS),
+        "pontuacao_minima": 10,
+        "pontuacao_maxima": 40,
+        "perguntas": PERGUNTAS,
+    })
+
+
+@app.post("/api/resultado")
+def calcular_resultado():
+    """Recebe { respostas: { q1: 1, ..., q10: 4 } } e devolve o resultado."""
+    dados = request.get_json(silent=True)
+
+    if not isinstance(dados, dict) or not isinstance(dados.get("respostas"), dict):
+        return jsonify({
+            "erro": "Envie um JSON no formato {\"respostas\":{\"q1\":1,...,\"q10\":4}}."
+        }), 400
+
+    respostas = dados["respostas"]
+    esperadas = {f"q{i}" for i in range(1, 11)}
+    recebidas = set(respostas.keys())
+
+    faltantes = sorted(esperadas - recebidas)
+    extras = sorted(recebidas - esperadas)
+
+    if faltantes:
+        return jsonify({
+            "erro": "Responda todas as 10 perguntas.",
+            "perguntas_faltantes": faltantes,
+        }), 400
+
+    if extras:
+        return jsonify({"erro": "Foram enviadas perguntas inválidas.", "extras": extras}), 400
+
+    respostas_validas = {}
+    for chave in esperadas:
+        valor = respostas[chave]
+        # bool é subclasse de int em Python; por isso é rejeitado explicitamente.
+        if isinstance(valor, bool) or not isinstance(valor, int) or valor not in (1, 2, 3, 4):
+            return jsonify({
+                "erro": f"A resposta de {chave} deve ser um número inteiro entre 1 e 4."
+            }), 400
+        respostas_validas[chave] = valor
+
+    pontuacao = sum(respostas_validas.values())
+    classificacao = classificar(pontuacao)
+
+    return jsonify({
+        "pontuacao": pontuacao,
+        "pontuacao_maxima": 40,
+        "nivel": classificacao["nivel"],
+        "descricao": classificacao["descricao"],
+        "respostas_recebidas": len(respostas_validas),
+    })
+
+
+@app.get("/api/health")
+def verificar_api():
+    return jsonify({"status": "online", "mensagem": "API de Consumo Digital funcionando."})
+
+
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=5000, debug=True)

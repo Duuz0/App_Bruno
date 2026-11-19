@@ -215,7 +215,7 @@
 
     <main>
         <div class="card">
-            <form action="#" method="POST">
+            <form id="quiz-form">
 
                 <!-- 1 -->
                 <div class="q-block">
@@ -445,11 +445,96 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn">Enviar Respostas</button>
+                <button type="submit" class="btn" id="enviar-btn">Enviar Respostas</button>
+                <p id="mensagem" role="status" aria-live="polite" style="margin-top: 1rem; text-align: center;"></p>
             </form>
         </div>
+
+        <section class="card" id="resultado" hidden aria-live="polite">
+            <h2 class="ref-title">Seu resultado</h2>
+            <p id="resultado-nivel" style="font-size: 1.25rem; font-weight: 700; margin-bottom: .6rem;"></p>
+            <p id="resultado-descricao" style="color: #64748b; line-height: 1.6;"></p>
+            <p id="resultado-pontos" style="margin-top: 1rem; font-weight: 600;"></p>
+            <button type="button" class="btn" id="refazer-btn">Refazer teste</button>
+        </section>
     </main>
 
+    <script>
+        const formulario = document.getElementById("quiz-form");
+        const botaoEnviar = document.getElementById("enviar-btn");
+        const mensagem = document.getElementById("mensagem");
+        const areaResultado = document.getElementById("resultado");
+
+        // Consulta a API ao abrir a página para confirmar que o backend está conectado.
+        async function verificarConexao() {
+            try {
+                const resposta = await fetch("/api/health");
+                if (!resposta.ok) throw new Error("API indisponível");
+                mensagem.textContent = "Conectado à API. Responda às 10 perguntas.";
+                mensagem.style.color = "#15803d";
+            } catch (erro) {
+                mensagem.textContent = "Não foi possível conectar à API. Inicie o servidor Python.";
+                mensagem.style.color = "#b91c1c";
+            }
+        }
+
+        formulario.addEventListener("submit", async (evento) => {
+            evento.preventDefault();
+
+            if (!formulario.reportValidity()) return;
+
+            const dadosFormulario = new FormData(formulario);
+            const respostas = {};
+
+            for (let i = 1; i <= 10; i++) {
+                respostas[`q${i}`] = Number(dadosFormulario.get(`q${i}`));
+            }
+
+            botaoEnviar.disabled = true;
+            botaoEnviar.textContent = "Calculando...";
+            mensagem.textContent = "Enviando suas respostas para a API...";
+            mensagem.style.color = "#64748b";
+
+            try {
+                const resposta = await fetch("/api/resultado", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ respostas })
+                });
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    throw new Error(resultado.erro || "Não foi possível calcular o resultado.");
+                }
+
+                document.getElementById("resultado-nivel").textContent = resultado.nivel;
+                document.getElementById("resultado-descricao").textContent = resultado.descricao;
+                document.getElementById("resultado-pontos").textContent =
+                    `Pontuação: ${resultado.pontuacao} de ${resultado.pontuacao_maxima} pontos`;
+
+                areaResultado.hidden = false;
+                mensagem.textContent = "Respostas enviadas e resultado calculado com sucesso!";
+                mensagem.style.color = "#15803d";
+                areaResultado.scrollIntoView({ behavior: "smooth", block: "center" });
+            } catch (erro) {
+                mensagem.textContent = erro.message;
+                mensagem.style.color = "#b91c1c";
+            } finally {
+                botaoEnviar.disabled = false;
+                botaoEnviar.textContent = "Enviar Respostas";
+            }
+        });
+
+        document.getElementById("refazer-btn").addEventListener("click", () => {
+            formulario.reset();
+            areaResultado.hidden = true;
+            mensagem.textContent = "Teste reiniciado. Responda novamente.";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        verificarConexao();
+    </script>
 </body>
 
 </html>
